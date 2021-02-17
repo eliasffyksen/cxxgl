@@ -1,4 +1,6 @@
 
+DEBUG?=1
+
 BUILD_PATH=./build
 LIBS=glfw GL
 
@@ -6,6 +8,14 @@ SRCS=$(wildcard src/*.cpp)
 OBJS=$(SRCS:%.cpp=$(BUILD_PATH)/%.o)
 
 CXX=clang++
+CFLAGS?=
+CFLAGS+=-Wall
+
+ifeq ($(DEBUG), 1)
+	CFLAGS+=-g -DDEBUG=1
+else
+	CFLAGS+=-O2
+endif
 
 .PHONY: all run build clean
 
@@ -21,8 +31,8 @@ clean:
 
 $(BUILD_PATH)/main: $(OBJS)
 	mkdir -p $(dir $@)
-	$(CXX) $(LIBS:%=-l%) -o $@ $^
+	$(CXX) $(CFLAGS) $(LIBS:%=-l%) -o $@ $^
 
 $(BUILD_PATH)/%.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) -c -o $@ $<
+	$(CXX) $(CFLAGS) -c -o $@ $<
