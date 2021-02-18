@@ -2,7 +2,7 @@
 DEBUG?=1
 
 BUILD_PATH=./build
-LIBS=glfw GL
+LIBS=glfw GL GLEW
 
 SRCS=$(wildcard src/*.cpp)
 OBJS=$(SRCS:%.cpp=$(BUILD_PATH)/%.o)

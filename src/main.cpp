@@ -1,3 +1,5 @@
+
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "log.h"
@@ -22,7 +24,10 @@ int main(void)
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
-    LOG("Window created");
+    if (glewInit() != GLEW_OK)
+        FATAL_ERR("Failed to initialize GLEW");
+
+    LOG("Window created, GLEW initialized");
     LOG("Running game loop");
 
     /* Loop until the user closes the window */
