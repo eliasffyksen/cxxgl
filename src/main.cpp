@@ -14,7 +14,7 @@ int main(void)
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(640, 480, "Cherno-OpenGL", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -28,7 +28,22 @@ int main(void)
         FATAL_ERR("Failed to initialize GLEW");
 
     LOG("Window created, GLEW initialized");
+    LOG("Using OpenGL version: " << glGetString(GL_VERSION));
     LOG("Running game loop");
+
+    float positions[] = {
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        0.0f, 1.0f,
+    };
+
+    GLuint buffer;
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -36,11 +51,7 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBegin(GL_TRIANGLES);
-        glVertex2f(0.0f, 0.0f);
-        glVertex2f(0.0f, 1.0f);
-        glVertex2f(1.0f, 0.0f);
-        glEnd();        
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
