@@ -2,7 +2,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "log.h"
+#include "log.hpp"
 
 int main(void)
 {
