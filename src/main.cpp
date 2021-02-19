@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "log.hpp"
+#include "shader.hpp"
 
 int main(void)
 {
@@ -14,6 +15,7 @@ int main(void)
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     window = glfwCreateWindow(640, 480, "Cherno-OpenGL", NULL, NULL);
     if (!window)
     {
@@ -32,9 +34,9 @@ int main(void)
     LOG("Running game loop");
 
     float positions[] = {
-        0.0f, 0.0f,
-        1.0f, 0.0f,
+        -1.0f, -1.0f,
         0.0f, 1.0f,
+        1.0f, -1.0f,
     };
 
     GLuint buffer;
@@ -44,6 +46,31 @@ int main(void)
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+
+    std::string vertexShader =
+        "#version 330 core\n"
+        "\n"
+        "layout(location = 0) in vec4 position;\n"
+        "\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = position;\n"
+        "}\n"
+        ;
+
+    std::string fragmentShader =
+        "#version 330 core\n"
+        "\n"
+        "layout(location = 0) out vec4 color;\n"
+        "\n"
+        "void main()\n"
+        "{\n"
+        "   color = vec4(1.0, 0.0, 0.0, 1.0);\n"
+        "}\n"
+        ;
+
+    GLuint shader = createShader(vertexShader, fragmentShader);
+    glUseProgram(shader);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -59,6 +86,8 @@ int main(void)
         /* Poll for and process events */
         glfwPollEvents();
     }
+
+    glDeleteProgram(shader);
 
     LOG("Terminating");
 
