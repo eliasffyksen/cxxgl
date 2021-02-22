@@ -5,37 +5,17 @@
 #include "log.hpp"
 #include "shader.hpp"
 #include "error.hpp"
+#include "window.hpp"
 
 int main(void)
 {
-    LOG("Creating window");
-    GLFWwindow *window;
-
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
-
-    /* Create a windowed mode window and its OpenGL context */
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
-    window = glfwCreateWindow(640, 480, "Cherno-OpenGL", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
-
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-
-    glfwSwapInterval(1);
-
-    if (glewInit() != GLEW_OK)
-        FATAL_ERR("Failed to initialize GLEW");
+    Window window(800, 400, "cherno-opengl",
+                  {
+                      {GLFW_CONTEXT_VERSION_MAJOR, 4},
+                      {GLFW_CONTEXT_VERSION_MINOR, 6},
+                      {GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE},
+                      {GLFW_RESIZABLE, GLFW_FALSE},
+                  });
 
     LOG("Window created, GLEW initialized");
     LOG("Using OpenGL version: " << glGetString(GL_VERSION));
@@ -86,7 +66,7 @@ int main(void)
     LOG("Running game loop");
 
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
+    while (!window.shouldClose())
     {
         if (r > 1.0f)
         {
@@ -105,11 +85,8 @@ int main(void)
 
         GLCall(glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, nullptr));
 
-        /* Swap front and back buffers */
-        GLCall(glfwSwapBuffers(window));
-
-        /* Poll for and process events */
-        GLCall(glfwPollEvents());
+        window.swapBuffers();
+        window.pollEvents();
     }
 
     GLCall(glDeleteProgram(shader));
