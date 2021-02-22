@@ -39,9 +39,7 @@ ShaderSource::ShaderSource(const std::string& filename) {
 
 GLuint compileShader(GLuint type, const std::string& source)
 {
-    GLClearError();
-    GLuint id = glCreateShader(type);
-    GLPrintError();
+    GLCall(GLuint id = glCreateShader(type));
     const char* src = source.c_str();
     GLCall(glShaderSource(id, 1, &src, nullptr));
     GLCall(glCompileShader(id));
@@ -65,9 +63,7 @@ GLuint compileShader(GLuint type, const std::string& source)
 
 GLuint createShader(const ShaderSource& source)
 {
-    GLClearError();
-    GLuint program = glCreateProgram();
-    GLPrintError();
+    GLCall(GLuint program = glCreateProgram());
     GLuint vs = compileShader(GL_VERTEX_SHADER, source.sources[(size_t) ShaderSource::ShaderType::VERTEX].str());
     GLuint fs = compileShader(GL_FRAGMENT_SHADER, source.sources[(size_t) ShaderSource::ShaderType::FRAGMENT].str());
 

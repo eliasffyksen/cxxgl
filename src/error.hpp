@@ -5,11 +5,10 @@
 
 #include "log.hpp"
 
-#define GLCall(x) {\
+#define GLCall(x) \
     GLClearError();\
     x;\
-    GLPrintError();\
-}
+    BREAK_IF(!GLPrintError(#x, __FILE__, __LINE__))
 
-void GLPrintError();
+bool GLPrintError(const char* funct, const char* file, int line);
 void GLClearError();

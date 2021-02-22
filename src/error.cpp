@@ -1,10 +1,12 @@
 
 #include "error.hpp"
 
-void GLPrintError() {
+bool GLPrintError(const char* funct, const char* file, int line) {
     while (GLuint err = glGetError()) {
-       FATAL_ERR("[OpenGL Error] (" << err << ")");
+       ERR("[OpenGL Error] (" << err << ") " << funct << " " << file << ":" << line);
+       return false;
     }
+    return true;
 }
 
 void GLClearError() {
