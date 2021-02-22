@@ -16,7 +16,12 @@ int main(void)
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
     window = glfwCreateWindow(640, 480, "Cherno-OpenGL", NULL, NULL);
     if (!window)
     {
@@ -47,18 +52,23 @@ int main(void)
         1, 3, 2,
     };
 
+    GLuint vao;
+    GLCall(glGenVertexArrays(1, &vao));
+    GLCall(glBindVertexArray(vao));
+
     GLuint buffer;
     GLCall(glGenBuffers(1, &buffer));
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
     GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
+
+    GLCall(glEnableVertexAttribArray(0));
+    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
 
     GLuint ibo;
     GLCall(glGenBuffers(1, &ibo));
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
     GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
 
-    GLCall(glEnableVertexAttribArray(0));
-    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
     GLuint shader = createShader(ShaderSource("./res/shaders/basic.glsl"));
     GLCall(glUseProgram(shader));
 
@@ -80,10 +90,11 @@ int main(void)
             r_inc =  0.05f;
         }
         r += r_inc;
-        GLCall(glUniform4f(u_Color, r, 0.0f, 1.0f, 1.0f));
 
         /* Render here */
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
+
+        GLCall(glUniform4f(u_Color, r, 0.0f, 1.0f, 1.0f));
 
         GLCall(glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, nullptr));
 
