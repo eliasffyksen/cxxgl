@@ -9,7 +9,7 @@
 int main(void)
 {
     LOG("Creating window");
-    GLFWwindow* window;
+    GLFWwindow *window;
 
     /* Initialize the library */
     if (!glfwInit())
@@ -41,15 +41,19 @@ int main(void)
     LOG("Using OpenGL version: " << glGetString(GL_VERSION));
 
     float positions[] = {
-        -0.5f,  0.5f, // TR
-         0.5f,  0.5f, // TL
+        -0.5f, 0.5f,  // TR
+        0.5f, 0.5f,   // TL
         -0.5f, -0.5f, // BR
-         0.5f, -0.5f, // BL
+        0.5f, -0.5f,  // BL
     };
 
     uint32_t indices[] = {
-        0, 1, 2,
-        1, 3, 2,
+        0,
+        1,
+        2,
+        1,
+        3,
+        2,
     };
 
     GLuint vao;
@@ -84,10 +88,13 @@ int main(void)
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-        if (r > 1.0f) {
+        if (r > 1.0f)
+        {
             r_inc = -0.05f;
-        } else if (r < 0.0f) {
-            r_inc =  0.05f;
+        }
+        else if (r < 0.0f)
+        {
+            r_inc = 0.05f;
         }
         r += r_inc;
 

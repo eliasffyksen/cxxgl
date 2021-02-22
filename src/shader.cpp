@@ -1,7 +1,8 @@
 
 #include "shader.hpp"
 
-void readShader(const std::string& filename, ShaderSource &shaderSource) {
+void readShader(const std::string &filename, ShaderSource &shaderSource)
+{
 
     std::ifstream stream(filename);
 
@@ -13,34 +14,42 @@ void readShader(const std::string& filename, ShaderSource &shaderSource) {
     ShaderSource::ShaderType currentType = ShaderSource::ShaderType::NONE;
 
     std::string line;
-    while (getline(stream, line)) {
-        if (line.find("#shader") != std::string::npos) {
-            if (line.find("vertex") != std::string::npos) {
+    while (getline(stream, line))
+    {
+        if (line.find("#shader") != std::string::npos)
+        {
+            if (line.find("vertex") != std::string::npos)
+            {
                 LOG("Reading shader type vertex");
                 currentType = ShaderSource::ShaderType::VERTEX;
                 continue;
-            } else if (line.find("fragment") != std::string::npos) {
+            }
+            else if (line.find("fragment") != std::string::npos)
+            {
                 LOG("Reading shader type fragment");
                 currentType = ShaderSource::ShaderType::FRAGMENT;
                 continue;
             }
             FATAL_ERR("Unknown shader type in line \"" << line << "\" in shader file: " << filename);
-        } else if (currentType != ShaderSource::ShaderType::NONE) {
-            shaderSource.sources[(size_t) currentType] << line << '\n';
+        }
+        else if (currentType != ShaderSource::ShaderType::NONE)
+        {
+            shaderSource.sources[(size_t)currentType] << line << '\n';
         }
     }
 
     LOG("Done reading shader: " << filename);
 }
 
-ShaderSource::ShaderSource(const std::string& filename) {
+ShaderSource::ShaderSource(const std::string &filename)
+{
     readShader(filename, *this);
 }
 
-GLuint compileShader(GLuint type, const std::string& source)
+GLuint compileShader(GLuint type, const std::string &source)
 {
     GLCall(GLuint id = glCreateShader(type));
-    const char* src = source.c_str();
+    const char *src = source.c_str();
     GLCall(glShaderSource(id, 1, &src, nullptr));
     GLCall(glCompileShader(id));
 
@@ -61,11 +70,11 @@ GLuint compileShader(GLuint type, const std::string& source)
     return id;
 }
 
-GLuint createShader(const ShaderSource& source)
+GLuint createShader(const ShaderSource &source)
 {
     GLCall(GLuint program = glCreateProgram());
-    GLuint vs = compileShader(GL_VERTEX_SHADER, source.sources[(size_t) ShaderSource::ShaderType::VERTEX].str());
-    GLuint fs = compileShader(GL_FRAGMENT_SHADER, source.sources[(size_t) ShaderSource::ShaderType::FRAGMENT].str());
+    GLuint vs = compileShader(GL_VERTEX_SHADER, source.sources[(size_t)ShaderSource::ShaderType::VERTEX].str());
+    GLuint fs = compileShader(GL_FRAGMENT_SHADER, source.sources[(size_t)ShaderSource::ShaderType::FRAGMENT].str());
 
     GLCall(glAttachShader(program, vs));
     GLCall(glAttachShader(program, fs));
@@ -77,4 +86,3 @@ GLuint createShader(const ShaderSource& source)
 
     return program;
 }
-
