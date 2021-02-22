@@ -27,6 +27,8 @@ int main(void)
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    glfwSwapInterval(1);
+
     if (glewInit() != GLEW_OK)
         FATAL_ERR("Failed to initialize GLEW");
 
@@ -60,11 +62,26 @@ int main(void)
     GLuint shader = createShader(ShaderSource("./res/shaders/basic.glsl"));
     GLCall(glUseProgram(shader));
 
+    GLCall(GLint u_Color = glGetUniformLocation(shader, "u_Color"));
+    if (u_Color == -1)
+        FATAL_ERR("Invalid uniform location");
+
+    float r = 0.0f;
+    float r_inc = 0.05f;
+
     LOG("Running game loop");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+        if (r > 1.0f) {
+            r_inc = -0.05f;
+        } else if (r < 0.0f) {
+            r_inc =  0.05f;
+        }
+        r += r_inc;
+        GLCall(glUniform4f(u_Color, r, 0.0f, 1.0f, 1.0f));
+
         /* Render here */
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
