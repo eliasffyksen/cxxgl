@@ -12,7 +12,7 @@ CFLAGS?=
 CFLAGS+=-Wall
 
 ifeq ($(DEBUG), 1)
-	CFLAGS+=-g -DDEBUG=1
+	CFLAGS+=-O0 -ggdb -DDEBUG=1
 else
 	CFLAGS+=-O2
 endif

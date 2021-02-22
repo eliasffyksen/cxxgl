@@ -2,6 +2,7 @@
 #pragma once
 
 #include "log.hpp"
+#include "error.hpp"
 
 #include <GL/glew.h>
 #include <string>

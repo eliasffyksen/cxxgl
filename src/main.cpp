@@ -4,6 +4,7 @@
 
 #include "log.hpp"
 #include "shader.hpp"
+#include "error.hpp"
 
 int main(void)
 {
@@ -45,19 +46,19 @@ int main(void)
     };
 
     GLuint buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
+    GLCall(glGenBuffers(1, &buffer));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
 
     GLuint ibo;
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    GLCall(glGenBuffers(1, &ibo));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+    GLCall(glEnableVertexAttribArray(0));
+    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
     GLuint shader = createShader(ShaderSource("./res/shaders/basic.glsl"));
-    glUseProgram(shader);
+    GLCall(glUseProgram(shader));
 
     LOG("Running game loop");
 
@@ -65,18 +66,18 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+        GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-        glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, nullptr);
+        GLCall(glDrawElements(GL_TRIANGLES, sizeof(indices), GL_INT, nullptr));
 
         /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+        GLCall(glfwSwapBuffers(window));
 
         /* Poll for and process events */
-        glfwPollEvents();
+        GLCall(glfwPollEvents());
     }
 
-    glDeleteProgram(shader);
+    GLCall(glDeleteProgram(shader));
 
     LOG("Terminating");
 

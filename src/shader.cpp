@@ -39,22 +39,24 @@ ShaderSource::ShaderSource(const std::string& filename) {
 
 GLuint compileShader(GLuint type, const std::string& source)
 {
+    GLClearError();
     GLuint id = glCreateShader(type);
+    GLPrintError();
     const char* src = source.c_str();
-    glShaderSource(id, 1, &src, nullptr);
-    glCompileShader(id);
+    GLCall(glShaderSource(id, 1, &src, nullptr));
+    GLCall(glCompileShader(id));
 
     int result;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+    GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
     if (result == GL_FALSE)
     {
         int length;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+        GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
         char message[length];
-        glGetShaderInfoLog(id, length, &length, message);
+        GLCall(glGetShaderInfoLog(id, length, &length, message));
         ERR("Failed top compile shader");
         ERR("GL ERR: " << message);
-        glDeleteShader(id);
+        GLCall(glDeleteShader(id));
         return 0;
     }
 
@@ -63,17 +65,19 @@ GLuint compileShader(GLuint type, const std::string& source)
 
 GLuint createShader(const ShaderSource& source)
 {
+    GLClearError();
     GLuint program = glCreateProgram();
+    GLPrintError();
     GLuint vs = compileShader(GL_VERTEX_SHADER, source.sources[(size_t) ShaderSource::ShaderType::VERTEX].str());
     GLuint fs = compileShader(GL_FRAGMENT_SHADER, source.sources[(size_t) ShaderSource::ShaderType::FRAGMENT].str());
 
-    glAttachShader(program, vs);
-    glAttachShader(program, fs);
-    glLinkProgram(program);
-    glValidateProgram(program);
+    GLCall(glAttachShader(program, vs));
+    GLCall(glAttachShader(program, fs));
+    GLCall(glLinkProgram(program));
+    GLCall(glValidateProgram(program));
 
-    glDeleteShader(vs);
-    glDeleteShader(fs);
+    GLCall(glDeleteShader(vs));
+    GLCall(glDeleteShader(fs));
 
     return program;
 }
