@@ -16,6 +16,6 @@ public:
     int shouldClose(void);
     void swapBuffers(void);
     void pollEvents(void);
-
+private:
     GLFWwindow * glfwWindow;
 };
