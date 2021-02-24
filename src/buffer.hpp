@@ -14,6 +14,7 @@ public:
 
     void bind();
     void unbind();
+    GLuint getId();
 private:
     GLuint id;
     GLenum bufferType;

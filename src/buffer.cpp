@@ -22,3 +22,8 @@ void Buffer::unbind()
 {
     GLCall(glBindBuffer(bufferType, 0));
 }
+
+GLuint Buffer::getId()
+{
+    return id;
+}

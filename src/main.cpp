@@ -33,10 +33,12 @@ int main(void)
 
     VertexArray vao;
 
-    Buffer buffer(positions, sizeof(positions));
+    Buffer vertexBuffer(positions, sizeof(positions));
 
-    GLCall(glEnableVertexAttribArray(0));
-    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
+    VertexBufferLayout vbl;
+    vbl.addAttrib<float>(2);
+
+    vao.addBuffer(vertexBuffer, vbl);
 
     Buffer ibo(indices, sizeof(indices), GL_ELEMENT_ARRAY_BUFFER);
 
