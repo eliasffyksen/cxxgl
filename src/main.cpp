@@ -41,21 +41,28 @@ int main(void)
     Buffer ibo(indices, sizeof(indices), GL_ELEMENT_ARRAY_BUFFER);
 
     GLuint shader = createShader(ShaderSource("./res/shaders/basic.glsl"));
-    GLCall(glUseProgram(shader));
 
     GLCall(GLint u_Color = glGetUniformLocation(shader, "u_Color"));
     if (u_Color == -1)
         FATAL_ERR("Invalid uniform location");
 
-    GLCall(glUniform4f(u_Color, 0.1f, 0.2f, 0.3f, 1.0f));
-
     LOG("Running game loop");
+    float r = 0;
 
     /* Loop until the user closes the window */
     while (!window.shouldClose())
     {
         /* Render here */
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
+
+        GLCall(glUseProgram(shader));
+        GLCall(glUniform4f(u_Color, r, 0.2f, 0.3f, 1.0f));
+        r += 0.01f;
+        if (r > 1.0f)
+            r = 0.0f;
+
+        vao.bind();
+
         GLCall(glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, nullptr));
         window.swapBuffers();
         window.pollEvents();
