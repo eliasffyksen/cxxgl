@@ -22,23 +22,23 @@ int main(void)
     LOG("Window created, GLEW initialized");
     LOG("Using OpenGL version: " << glGetString(GL_VERSION));
 
-    std::vector<float> positions = {
+    float positions[] = {
         -0.5f, 0.5f,  // TR
         0.5f, 0.5f,   // TL
         -0.5f, -0.5f, // BR
         0.5f, -0.5f,  // BL
     };
 
-    std::vector<unsigned int> indices = { 0, 1, 2, 1, 3, 2, };
+    unsigned int indices[] = { 0, 1, 2, 1, 3, 2, };
 
     VertexArray vao;
 
-    Buffer<float> buffer(GL_ARRAY_BUFFER, positions);
+    Buffer buffer(positions, sizeof(positions));
 
     GLCall(glEnableVertexAttribArray(0));
     GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
 
-    Buffer<unsigned int> ibo(GL_ELEMENT_ARRAY_BUFFER, indices);
+    Buffer ibo(indices, sizeof(indices), GL_ELEMENT_ARRAY_BUFFER);
 
     GLuint shader = createShader(ShaderSource("./res/shaders/basic.glsl"));
     GLCall(glUseProgram(shader));

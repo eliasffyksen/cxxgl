@@ -6,19 +6,15 @@
 
 #include "error.hpp"
 
-template <class T>
 class Buffer
 {
 public:
-    Buffer(GLenum bufferType, std::vector<T> &data, GLenum usage = GL_STATIC_DRAW);
+    Buffer(const void* data, size_t size, GLenum bufferType = GL_ARRAY_BUFFER, GLenum usage = GL_STATIC_DRAW);
+    ~Buffer();
+
+    void bind();
+    void unbind();
 private:
     GLuint id;
+    GLenum bufferType;
 };
-
-template <class T>
-Buffer<T>::Buffer(GLenum bufferType, std::vector<T> &data, GLenum usage)
-{
-    GLCall(glGenBuffers(1, &id));
-    GLCall(glBindBuffer(bufferType, id));
-    GLCall(glBufferData(bufferType, data.size() * sizeof(T), data.data(), GL_STATIC_DRAW));
-}
