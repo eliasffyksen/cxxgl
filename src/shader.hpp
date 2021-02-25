@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <unordered_map>
 
 class Shader
 {
@@ -22,6 +23,7 @@ public:
     void bind();
     void unbind();
     void setUniform4f(const std::string& name, float f0, float f1, float f2, float f3);
+    GLint getUniformLocation(const std::string& name);
 
 private:
     struct ShaderSource
@@ -41,6 +43,7 @@ private:
 
     ShaderSource shaderSource;
     GLuint programId = 0;
+    std::unordered_map<std::string, GLint> locationCache;
 
     GLuint compileShaderType(GLuint type, const std::string &source);
 };

@@ -82,6 +82,7 @@ void Shader::compile()
 {
     if (programId) {
         GLCall(glDeleteProgram(programId));
+        locationCache.clear();
     }
 
     GLCall(programId = glCreateProgram());
@@ -110,8 +111,18 @@ void Shader::unbind()
 
 void Shader::setUniform4f(const std::string& name, float f0, float f1, float f2, float f3)
 {
+    GLCall(glUniform4f(getUniformLocation(name), f0, f1, f2, f3));
+}
+
+GLint Shader::getUniformLocation(const std::string& name)
+{
+    auto loc = locationCache.find(name);
+    if (locationCache.find(name) != locationCache.end())
+        return (*loc).second;
+
     GLCall(GLint uLoc = glGetUniformLocation(programId, name.c_str()));
     if (uLoc == -1)
         FATAL_ERR("Invalid uniform location");
-    GLCall(glUniform4f(uLoc, f0, f1, f2, f3));
+    locationCache[name] = uLoc;
+    return uLoc;
 }
