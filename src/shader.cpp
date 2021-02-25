@@ -1,7 +1,19 @@
 
 #include "shader.hpp"
 
-void readShader(const std::string &filename, ShaderSource &shaderSource)
+Shader::Shader() {}
+
+Shader::Shader(const std::string& filepath)
+{
+    read(filepath);
+}
+
+Shader::~Shader()
+{
+    GLCall(glDeleteProgram(programId));
+}
+
+void Shader::read(const std::string &filename)
 {
 
     std::ifstream stream(filename);
@@ -41,12 +53,7 @@ void readShader(const std::string &filename, ShaderSource &shaderSource)
     LOG("Done reading shader: " << filename);
 }
 
-ShaderSource::ShaderSource(const std::string &filename)
-{
-    readShader(filename, *this);
-}
-
-GLuint compileShader(GLuint type, const std::string &source)
+GLuint Shader::compileShaderType(GLuint type, const std::string &source)
 {
     GLCall(GLuint id = glCreateShader(type));
     const char *src = source.c_str();
@@ -64,25 +71,47 @@ GLuint compileShader(GLuint type, const std::string &source)
         ERR("Failed top compile shader");
         ERR("GL ERR: " << message);
         GLCall(glDeleteShader(id));
+        FATAL_ERR("Exiting");
         return 0;
     }
 
     return id;
 }
 
-GLuint createShader(const ShaderSource &source)
+void Shader::compile()
 {
-    GLCall(GLuint program = glCreateProgram());
-    GLuint vs = compileShader(GL_VERTEX_SHADER, source.sources[(size_t)ShaderSource::ShaderType::VERTEX].str());
-    GLuint fs = compileShader(GL_FRAGMENT_SHADER, source.sources[(size_t)ShaderSource::ShaderType::FRAGMENT].str());
+    if (programId) {
+        GLCall(glDeleteProgram(programId));
+    }
 
-    GLCall(glAttachShader(program, vs));
-    GLCall(glAttachShader(program, fs));
-    GLCall(glLinkProgram(program));
-    GLCall(glValidateProgram(program));
+    GLCall(programId = glCreateProgram());
+
+    GLuint vs = compileShaderType(GL_VERTEX_SHADER, shaderSource.sources[(size_t)ShaderSource::ShaderType::VERTEX].str());
+    GLuint fs = compileShaderType(GL_FRAGMENT_SHADER, shaderSource.sources[(size_t)ShaderSource::ShaderType::FRAGMENT].str());
+
+    GLCall(glAttachShader(programId, vs));
+    GLCall(glAttachShader(programId, fs));
+    GLCall(glLinkProgram(programId));
+    GLCall(glValidateProgram(programId));
 
     GLCall(glDeleteShader(vs));
     GLCall(glDeleteShader(fs));
+}
 
-    return program;
+void Shader::bind()
+{
+    GLCall(glUseProgram(programId));
+}
+
+void Shader::unbind()
+{
+    GLCall(glUseProgram(0));
+}
+
+void Shader::setUniform4f(const std::string& name, float f0, float f1, float f2, float f3)
+{
+    GLCall(GLint uLoc = glGetUniformLocation(programId, name.c_str()));
+    if (uLoc == -1)
+        FATAL_ERR("Invalid uniform location");
+    GLCall(glUniform4f(uLoc, f0, f1, f2, f3));
 }
