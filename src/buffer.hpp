@@ -15,8 +15,10 @@ public:
     void bind() const;
     void unbind() const;
     GLuint getId() const;
+    size_t getSize() const;
 
 private:
     GLuint id;
     GLenum bufferType;
+    size_t bufferSize;
 };

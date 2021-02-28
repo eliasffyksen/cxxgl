@@ -8,6 +8,7 @@
 #include "window.hpp"
 #include "vertexArray.hpp"
 #include "buffer.hpp"
+#include "renderer.hpp"
 
 int main(void)
 {
@@ -48,22 +49,21 @@ int main(void)
     LOG("Running game loop");
     float r = 0;
 
+    Renderer renderer;
+
     /* Loop until the user closes the window */
     while (!window.shouldClose())
     {
         /* Render here */
-        GLCall(glClear(GL_COLOR_BUFFER_BIT));
-
         shader.bind();
-
         shader.setUniform4f("u_Color", r, 0.2f, 0.3f, 1.0f);
         r += 0.01f;
         if (r > 1.0f)
             r = 0.0f;
 
-        vao.bind();
+        renderer.clear();
+        renderer.draw(vao, ibo, shader);
 
-        GLCall(glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, nullptr));
         window.swapBuffers();
         window.pollEvents();
     }
