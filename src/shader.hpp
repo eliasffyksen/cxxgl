@@ -18,10 +18,10 @@ public:
     Shader(const std::string &filename);
     ~Shader();
 
-    void read(const std::string &filename);
+    void load(const std::string &filename);
     void compile();
-    void bind();
-    void unbind();
+    void bind() const;
+    void unbind() const;
     void setUniform4f(const std::string& name, float f0, float f1, float f2, float f3);
     GLint getUniformLocation(const std::string& name);
 

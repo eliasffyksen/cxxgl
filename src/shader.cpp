@@ -5,7 +5,7 @@ Shader::Shader() {}
 
 Shader::Shader(const std::string& filepath)
 {
-    read(filepath);
+    load(filepath);
 }
 
 Shader::~Shader()
@@ -13,7 +13,7 @@ Shader::~Shader()
     GLCall(glDeleteProgram(programId));
 }
 
-void Shader::read(const std::string &filename)
+void Shader::load(const std::string &filename)
 {
 
     std::ifstream stream(filename);
@@ -99,12 +99,12 @@ void Shader::compile()
     GLCall(glDeleteShader(fs));
 }
 
-void Shader::bind()
+void Shader::bind() const
 {
     GLCall(glUseProgram(programId));
 }
 
-void Shader::unbind()
+void Shader::unbind() const
 {
     GLCall(glUseProgram(0));
 }

@@ -13,17 +13,17 @@ Buffer::~Buffer()
     glDeleteBuffers(1, &id);
 }
 
-void Buffer::bind()
+void Buffer::bind() const
 {
     GLCall(glBindBuffer(bufferType, id));
 }
 
-void Buffer::unbind()
+void Buffer::unbind() const
 {
     GLCall(glBindBuffer(bufferType, 0));
 }
 
-GLuint Buffer::getId()
+GLuint Buffer::getId() const
 {
     return id;
 }
