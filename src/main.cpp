@@ -1,6 +1,8 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "log.hpp"
 #include "shader.hpp"
@@ -48,9 +50,12 @@ int main(void)
 
     Buffer ibo(indices, sizeof(indices), GL_ELEMENT_ARRAY_BUFFER);
 
+    glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.f, 1.f, -1.0f, 1.0f);
+    
     Shader shader("./res/shaders/basic.glsl");
     shader.compile();
     shader.bind();
+    shader.setUniformMatrix4f("u_MVP", proj);
 
     Texture opengl("./res/textures/OpenGL.png");
     opengl.bind();
