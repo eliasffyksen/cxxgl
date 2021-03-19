@@ -64,11 +64,11 @@ int main(void)
 
     Buffer ibo(indices, sizeof(indices), GL_ELEMENT_ARRAY_BUFFER);
 
-    Shader shader("./res/shaders/basic.glsl");
+    Shader shader("./example/res/shaders/basic.glsl");
     shader.compile();
     shader.bind();
 
-    Texture opengl("./res/textures/OpenGL.png");
+    Texture opengl("./example/res/textures/OpenGL.png");
     opengl.bind();
     // shader.setUniform1i("u_Tex", 0);
 
@@ -86,7 +86,7 @@ int main(void)
         r += 0.01f;
 
         renderer.clear();
-        renderer.draw(vao, ibo, shader);
+        renderer.draw(vao, ibo, shader, GL_LINES);
 
         window.swapBuffers();
         window.pollEvents();

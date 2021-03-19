@@ -11,5 +11,5 @@ class Renderer
 {
 public:
     void clear();
-    void draw(const VertexArray& vao, const Buffer& ibo, const Shader& shader);
+    void draw(const VertexArray& vao, const Buffer& ibo, const Shader& shader, GLenum mode=GL_TRIANGLES);
 };

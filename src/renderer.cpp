@@ -1,6 +1,6 @@
 #include "renderer.hpp"
 
-void Renderer::draw(const VertexArray& vao, const Buffer& ibo, const Shader& shader)
+void Renderer::draw(const VertexArray& vao, const Buffer& ibo, const Shader& shader, GLenum mode)
 {
     shader.bind();
     vao.bind();
