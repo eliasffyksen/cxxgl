@@ -4,7 +4,7 @@ void Renderer::draw(const VertexArray& vao, const Buffer& ibo, const Shader& sha
 {
     shader.bind();
     vao.bind();
-    GLCall(glDrawElements(GL_TRIANGLES, ibo.getSize(), GL_UNSIGNED_INT, nullptr));
+    GLCall(glDrawElements(drawMode, ibo.getSize(), GL_UNSIGNED_INT, nullptr));
 }
 
 void Renderer::clear()

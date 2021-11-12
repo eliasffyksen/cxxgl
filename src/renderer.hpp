@@ -10,6 +10,10 @@
 class Renderer
 {
 public:
+    Renderer(GLenum drawMode = GL_TRIANGLES): drawMode(drawMode) {}
     void clear();
     void draw(const VertexArray& vao, const Buffer& ibo, const Shader& shader);
+
+private:
+    const GLenum drawMode;
 };
