@@ -1,13 +1,21 @@
 
 DEBUG?=1
 
-BUILD_PATH=./build
+BUILD_PATH?=./build
+INCLUDE_PATH?=$(BUILD_PATH)/include
+
 LIBS=glfw GL GLEW
 
 SRCS=$(wildcard src/*.cpp)
 OBJS=$(SRCS:%.cpp=$(BUILD_PATH)/%.o)
 
-CXX=clang++
+HEADER_FILES:=$(wildcard src/*.hpp)
+HEADER_FILES:=$(HEADER_FILES:src/%.hpp=$(INCLUDE_PATH)/%.hpp)
+
+DEMOS:=$(wildcard demo/*.cpp)
+DEMOS:=$(DEMOS:demo/%.cpp=%)
+
+CXX?=clang++
 CFLAGS?=
 CFLAGS+=-Wall
 
@@ -17,21 +25,35 @@ else
 	CFLAGS+=-O2
 endif
 
-.PHONY: all run build clean
+.PHONY: all run build clean headers
 
 all: build
 
-run: build
-	./$(BUILD_PATH)/main
-
-build: $(BUILD_PATH)/main
+build: headers $(BUILD_PATH)/libcxxgl.a
 
 clean:
 	rm -r $(BUILD_PATH)/*
 
-$(BUILD_PATH)/main: $(OBJS)
+headers: $(HEADER_FILES)
+
+.PHONY: $(DEMOS:%=demo_%)
+$(DEMOS:%=demo_%): demo_%: $(BUILD_PATH)/demo/%
+
+.PHONY: $(DEMOS:%=demo_run_%)
+$(DEMOS:%=demo_run_%): demo_run_%: $(BUILD_PATH)/demo/%
+	./$<
+
+$(INCLUDE_PATH)/%.hpp: src/%.hpp
 	mkdir -p $(dir $@)
-	$(CXX) $(CFLAGS) $(LIBS:%=-l%) -o $@ $^
+	cp $< $@
+
+$(BUILD_PATH)/demo/%: demo/%.cpp build
+	mkdir -p $(dir $@)
+	$(CXX) $(CFLAGS) $(LIBS:%=-l%) -I$(INCLUDE_PATH) -o $@ $< $(BUILD_PATH)/libcxxgl.a
+
+$(BUILD_PATH)/%.a: $(OBJS)
+	mkdir -p $(dir $@)
+	ar rcs $@ $^
 
 $(BUILD_PATH)/%.o: %.cpp
 	mkdir -p $(dir $@)
